@@ -58,6 +58,13 @@ def normalize_all_data(raw_dataframe):
 
 #def normalize_source_data(source_dataframe):
 
+
+def training_and_testing_split(whole_data):
+	feat = normalized_df[['spread_avg', 'volume_total', 'volatility_average']]
+    target = normalized_df['liq_risk_identified']
+
+    feat_train, feat_test, target_train, target_test = sklearn.train_test_split(feat, target, test_size=0.2, random_state=42)
+
 main()
 
 
