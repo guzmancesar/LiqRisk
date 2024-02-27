@@ -58,7 +58,7 @@ def source_ingestion():
 	return data_to_normalize
 	
 
-
+#normalization function for the raw data
 def normalize_column(column):
     
     mean = column.mean()
@@ -82,13 +82,18 @@ def training_and_testing(whole_data):
     feat = whole_data[['spread_avg', 'volume_total', 'volatility_average']]
     target = whole_data['liq_risk_identified']
 
-    feat_train, feat_test, target_train, target_test = train_test_split(feat, target, test_size=0.2, random_state=42)
+    #no random state to allow use o f algo and take multiple outputs into consideration
+    feat_train, feat_test, target_train, target_test = train_test_split(feat, target, test_size=0.3)
 
-    model = svm.SVC(kernel = linear)
+    model = svm.SVC(kernel ='linear')
     model.fit(feat_train, target_train)
 
-    test_result
+    test_result = model.predict(feat_test)
+    accuracy_res = accuracy_score(target_test, test_result)
+    result = classification_report(target_test, test_result)
 
+    print("SVM Accuracy:", accuracy_res)
+    print("SVM Classification Report:\n", result)
 
 
 main()
