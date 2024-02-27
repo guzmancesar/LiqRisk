@@ -1,5 +1,8 @@
 import pandas 
-import sklearn
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, classification_report
 
 def main():
 	source_df = source_ingestion()
@@ -8,8 +11,24 @@ def main():
 	#replace source data frame with normalized data
 
 	normalized_df = normalize_all_data(source_df)
-	print(normalized_df)
 	
+	normalized_df['liq_risk_identified'] = normalized_df.apply(assign_target_label, axis=1)
+	
+	tt_df = training_and_testing(normalized_df)
+
+
+
+def assign_target_label(row):
+    #all thresholds below are spitballs as I have no industry knowledge
+    spread_threshold = 2  # Example threshold for bid-ask spread
+    volume_threshold = -2  # Example threshold for trading volume
+    volatility_threshold = 2  # Example threshold for volatility
+
+    # Check if the observation meets the criteria for high liquidity risk
+    if (row['spread_avg'] > spread_threshold) or (row['volume_total'] < volume_threshold) or (row['volatility_average'] > volatility_threshold):
+        return 1  # High liquidity risk
+    else:
+        return 0  # Low liquidity risk
 
 
 
@@ -59,11 +78,18 @@ def normalize_all_data(raw_dataframe):
 #def normalize_source_data(source_dataframe):
 
 
-def training_and_testing_split(whole_data):
-	feat = normalized_df[['spread_avg', 'volume_total', 'volatility_average']]
-    target = normalized_df['liq_risk_identified']
+def training_and_testing(whole_data):
+    feat = whole_data[['spread_avg', 'volume_total', 'volatility_average']]
+    target = whole_data['liq_risk_identified']
 
-    feat_train, feat_test, target_train, target_test = sklearn.train_test_split(feat, target, test_size=0.2, random_state=42)
+    feat_train, feat_test, target_train, target_test = train_test_split(feat, target, test_size=0.2, random_state=42)
+
+    model = svm.SVC(kernel = linear)
+    model.fit(feat_train, target_train)
+
+    test_result
+
+
 
 main()
 
