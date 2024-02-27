@@ -2,9 +2,13 @@ import pandas
 
 def main():
 	source_df = source_ingestion()
-	source_df["spread_avg"] = normalize_column(source_df['spread_avg'])
-	print(source_df)
+	
 
+	#replace source data frame with normalized data
+
+	normalized_df = normalize_all_data(source_df)
+	print(normalized_df)
+	
 
 
 
@@ -43,6 +47,13 @@ def normalize_column(column):
     return normalized_column
 
 
+def normalize_all_data(raw_dataframe):
+	raw_dataframe["spread_avg"] = normalize_column(raw_dataframe['spread_avg'])
+	raw_dataframe["volume_total"] = normalize_column(raw_dataframe['volume_total'])
+	raw_dataframe["volatility_average"] = normalize_column(raw_dataframe['volatility_average'])
+
+
+	return raw_dataframe
 
 #def normalize_source_data(source_dataframe):
 
