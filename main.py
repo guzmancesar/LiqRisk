@@ -3,18 +3,31 @@ from sklearn.model_selection import train_test_split
 from sklearn import svm
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, classification_report
+from datetime import date
 
 def main():
 	source_df = source_ingestion()
-	
+	source_df['Time'] = pandas.to_datetime(source_df['Time']).dt.date
+	source_df = source_df.rename(columns = {"Time":"Date"})
+	raw_df = source_df.copy()
+
 
 	#replace source data frame with normalized data
 
-	normalized_df = normalize_all_data(source_df)
+	normalized_df = normalize_all_data(raw_df)
 	
 	normalized_df['liq_risk_identified'] = normalized_df.apply(assign_target_label, axis=1)
 	
 	tt_df = training_and_testing(normalized_df)
+
+	print(source_df)
+	new_volume = input("Enter the volume: ")
+	new_volatility = input("Enter the volatility: ")
+	new_spread = input("Enter the spread: ")
+	date.today()
+	source_df.loc[len(source_df.index)] = [date.today(), new_volatility, new_volume, new_spread]  
+	print(source_df)
+
 
 
 
@@ -92,8 +105,11 @@ def training_and_testing(whole_data):
     accuracy_res = accuracy_score(target_test, test_result)
     result = classification_report(target_test, test_result)
 
-    print("SVM Accuracy:", accuracy_res)
-    print("SVM Classification Report:\n", result)
+    #ßprint("SVM Accuracy:", accuracy_res)
+    #print("SVM Classification Report:\n", result)
+
+
+#def test_new_instance:
 
 
 main()
